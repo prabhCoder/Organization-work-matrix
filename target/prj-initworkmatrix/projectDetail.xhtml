@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type"
+		content="text/html; charset=iso-8859-1 " />
+</h:head>
+<f:metadata>
+		<f:event listener="#{workMatrixController.isSelectedProjectNull}" type="preRenderView" /> 
+		</f:metadata>
+<h:body>
+<ui:composition template="/template.xhtml">
+<ui:define name="content">
+	<h:form id="prjForm">
+	<p:panel header="Project Details">
+	<h:panelGrid columns="3">
+	<h:outputText value="Name:" for="name"/>
+				<h:outputText value="#{workMatrixController.selectedProject.name}"
+					rendered="#{!empty workMatrixController.selectedProject and workMatrixController.operation=='READ'}"/>
+				<p:inputText id="name" value="#{workMatrixController.selectedProject.name}"
+					rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}"  required="true" requiredMessage="Please enter project name" validatorMessage="please enter atleast two characters" validator="#{workMatrixController.validateName}">
+					<f:validateLength minimum="2" maximum="30" />
+					</p:inputText>
+					<p:message for="name"></p:message>
+					<h:outputText value="Client :" for="client" />
+				<h:outputText value="#{workMatrixController.selectedProject.client}"
+					rendered="#{!empty workMatrixController.selectedProject and workMatrixController.operation=='READ'}" />
+				<p:inputText id="client" value="#{workMatrixController.selectedProject.client}"
+					rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}" required="true" requiredMessage="please enter client" />
+<p:message for="client"></p:message>
+				<h:outputText value="Start Date:" for="startdate"/>
+				<h:outputText
+					value="#{workMatrixController.selectedProject.startdate}"
+					rendered="#{!empty workMatrixController.selectedProject and workMatrixController.operation=='READ'}">
+					<f:convertDateTime pattern="dd-MM-yyyy" />
+				</h:outputText>
+				
+				<p:calendar id="startdate" title="dd-mm-yyyy" 
+					value="#{workMatrixController.selectedProject.startdate}" converterMessage="Invalid Date" mode="popup" pattern="dd-MM-yyyy"
+					rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}" >
+					 <p:ajax event="dateSelect" update="enddate" listener="#{workMatrixController.handleStartDateSelect}" resetValues="true"></p:ajax> 
+					  <p:ajax event="change" update="enddate" listener="#{workMatrixController.handleStartDateChange}" resetValues="true"></p:ajax> 
+					</p:calendar>
+<p:message for="startdate"></p:message>
+
+				<h:outputText value="End Date:" for="enddate" />
+				<h:outputText
+					value="#{workMatrixController.selectedProject.enddate}"
+					rendered="#{!empty workMatrixController.selectedProject and workMatrixController.operation=='READ'}">
+					<f:convertDateTime pattern="dd-MM-yyyy" />
+				</h:outputText>
+				<p:calendar title="dd-mm-yyyy" id="enddate" value="#{workMatrixController.selectedProject.enddate}" mode="popup" pattern="dd-MM-yyyy" 
+				 disabled="#{empty workMatrixController.selectedProject.startdate}"  mindate="#{workMatrixController.selectedProject.startdate}" rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}"  >
+					<f:attribute name="startdate" value="#{workMatrixController.selectedProject.startdate}"/> 
+					<p:ajax event="change" listener="#{workMatrixController.handleEndDateChange}" resetValues="true" update="@this"></p:ajax>  
+					</p:calendar>
+<p:message for="enddate"></p:message>
+				<h:outputText value="Status:" for="status" />
+				<h:outputText value="#{workMatrixController.selectedProject.status}"
+					rendered="#{!empty workMatrixController.selectedProject and workMatrixController.operation=='READ'}">
+				</h:outputText>
+				<p:selectOneMenu id="status" value="#{workMatrixController.selectedProject.status}" 
+					rendered="#{workMatrixController.operation ne 'READ'}" style="width:208px" >
+					<f:selectItems value="#{workMatrixController.projectStatusList}"></f:selectItems>
+					</p:selectOneMenu>
+					<p:message for="status"></p:message>
+
+				<h:outputText value="Description:" for="description"/>
+				<h:outputText
+					value="#{workMatrixController.selectedProject.description}"
+					rendered="#{!empty workMatrixController.selectedProject and workMatrixController.operation=='READ'}">
+				</h:outputText>
+				<p:inputTextarea id="description" autoResize="false" rows="5" cols="18"
+					value="#{workMatrixController.selectedProject.description}"
+					rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}" validatorMessage="you are exceeding the description limit" >
+					<f:validateLength maximum="250" />
+					</p:inputTextarea> 
+<p:message for="description"></p:message>
+				<h:outputText value="Employees:" rendered="#{workMatrixController.operation ne 'ADD'}"/>
+				<p:dataList
+					value="#{workMatrixController.selectedProject.employees}"
+					var="employee" rendered="#{workMatrixController.operation ne 'ADD'}">
+					<p:commandLink action="employeeDetail?faces-redirect=true" value="#{employee.name}">
+						<f:setPropertyActionListener
+							target="#{workMatrixController.selectedEmployee}"
+							value="#{employee}"></f:setPropertyActionListener>
+					</p:commandLink>
+
+
+				</p:dataList>
+				</h:panelGrid>
+				<br/>
+				<p:commandButton action="#{workMatrixController.saveProject}"
+					value="Save" process="@(.ui-panel : input)"
+					rendered="#{workMatrixController.operation ne 'READ'}">
+
+				</p:commandButton>
+			<p:commandButton value="Update" id="projUpdate" update=":prjForm"
+				rendered="#{workMatrixController.operation eq 'READ'}" ajax="false">
+				<f:setPropertyActionListener
+					target="#{workMatrixController.operation}" value="UPDATE"></f:setPropertyActionListener>
+
+			</p:commandButton>
+			
+		   <p:commandButton actionListener="#{workMatrixController.handleBackAction}" onclick="history.go(-1)" value="Back" immediate="true"/>
+			
+			</p:panel>
+	</h:form>
+	</ui:define>
+	</ui:composition>
+</h:body>
+</html>

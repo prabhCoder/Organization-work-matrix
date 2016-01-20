@@ -1,0 +1,16 @@
+body {
+      background: url("resources/gfx/background.jpg"); 
+       background-repeat: repeat;
+	background-color: Darkorange;
+	
+	
+	
+      }
+      
+      .update-icon{
+    background-image: url("#{resource['gfx/edit1.png']}") !important;
+}
+
+.colored-text{
+	color: #8000FF
+}

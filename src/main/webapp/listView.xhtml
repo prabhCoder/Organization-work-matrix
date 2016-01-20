@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type"
+		content="text/html; charset=iso-8859-1 " />
+</h:head>
+<f:metadata>
+		<f:event listener="#{workMatrixController.refreshList}" type="preRenderView" /> 
+		</f:metadata>
+<h:body>
+<ui:composition template="/template.xhtml">
+<ui:define name="content">
+	<h:form id="form">
+		<p:growl autoUpdate="true"></p:growl>
+		<p:tabView dynamic="true">
+			<p:tab title="Employees">
+
+				<p:dataTable id="emplistview"
+					value="#{workMatrixController.employeeList}" var="emp"
+					widgetVar="employeesTable"
+					filteredValue="#{workMatrixController.filteredEmployeeList}" rows="5"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					paginator="true" rowsPerPageTemplate="1,2,5">
+
+					<f:facet name="footer">
+						<p:commandButton action="employeeDetail?faces-redirect=true"
+							value="Add New Employee"
+							actionListener="#{workMatrixController.handleAddEmployee}">
+							<f:setPropertyActionListener
+								target="#{workMatrixController.operation}" value="ADD"></f:setPropertyActionListener>
+						</p:commandButton>
+					</f:facet>
+					<p:column headerText="EmployeeName" filterBy="#{emp.name}"
+						filterFunction="#{workMatrixController.filterByName}">
+						<p:commandLink value="#{emp.name}"
+							action="employeeDetail?faces-redirect=true" id="view">
+
+							<f:setPropertyActionListener
+								target="#{workMatrixController.operation}" value="READ"></f:setPropertyActionListener>
+							<f:setPropertyActionListener
+								target="#{workMatrixController.selectedEmployee}" value="#{emp}"></f:setPropertyActionListener>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="Department" filterBy="#{emp.department}"
+						filterMatchMode="in">
+						<f:facet name="filter">
+							<p:selectCheckboxMenu label="Departments"
+								onchange="PF('employeesTable').filter()">
+								<f:selectItems value="#{workMatrixController.departmentList}" />
+							</p:selectCheckboxMenu>
+						</f:facet>
+						<h:outputText value="#{emp.department}" />
+					</p:column>
+					<p:column headerText="Branch" filterBy="#{emp.branch}"
+						filterMatchMode="in">
+						<f:facet name="filter">
+							<p:selectCheckboxMenu label="Branches"
+								onchange="PF('employeesTable').filter()">
+								<f:selectItems value="#{workMatrixController.branchList}" />
+							</p:selectCheckboxMenu>
+						</f:facet>
+
+						<h:outputText value="#{emp.branch}" />
+					</p:column>
+					<p:column style="width:10%;">
+						<p:commandLink id="empUpdate"
+							action="employeeDetail?faces-redirect=true">
+							<h:graphicImage name="gfx/ed1.jpg"  width="30px" height="30px"/>
+							<f:setPropertyActionListener
+								target="#{workMatrixController.selectedEmployee}" value="#{emp}"></f:setPropertyActionListener>
+							<f:setPropertyActionListener
+								target="#{workMatrixController.operation}" value="UPDATE"></f:setPropertyActionListener>
+
+						</p:commandLink> 
+
+<p:spacer width="30px"></p:spacer>
+						<p:commandLink id="delete" update="emplistview"
+							process="@this" action="#{workMatrixController.deleteEmployee}">
+							<h:graphicImage name="gfx/delete12.jpg"  width="25px" height="30px"/>
+							<f:setPropertyActionListener
+								target="#{workMatrixController.selectedEmployee}" value="#{emp}"></f:setPropertyActionListener>
+						</p:commandLink>
+					</p:column>
+				</p:dataTable>
+			</p:tab>
+
+			<p:tab title="Projects">
+
+				<p:dataTable id="prolistview"
+					value="#{workMatrixController.projectList}" var="proj"
+					widgetVar="projectsTable"
+					filteredValue="#{workMatrixController.filteredProjectList}"
+					rows="5"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					paginator="true" rowsPerPageTemplate="1,5">
+					<f:facet name="footer">
+						<p:commandButton action="projectDetail?faces-redirect=true"
+							value="Add New Project"
+							actionListener="#{workMatrixController.handleAddProject}">
+							<f:setPropertyActionListener
+								target="#{workMatrixController.operation}" value="ADD"></f:setPropertyActionListener>
+						</p:commandButton>
+					</f:facet>
+					<p:column headerText="ProjectName" filterBy="#{proj.name}"
+						filterFunction="#{workMatrixController.filterByName}">
+						<p:commandLink action="projectDetail?faces-redirect=true"
+							value="#{proj.name}">
+							<f:setPropertyActionListener
+								target="#{workMatrixController.selectedProject}" value="#{proj}"></f:setPropertyActionListener>
+							<f:setPropertyActionListener
+								target="#{workMatrixController.operation}" value="READ"></f:setPropertyActionListener>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="Client" filterBy="#{proj.client}"
+						filterFunction="#{workMatrixController.filterByName}">
+						<h:outputText value="#{proj.client}" />
+					</p:column>
+					<p:column headerText="Status" filterBy="#{proj.status}"
+						filterMatchMode="in">
+						<f:facet name="filter">
+							<p:selectCheckboxMenu label="Status"
+								onchange="PF('projectsTable').filter()">
+								<f:selectItems value="#{workMatrixController.projectStatusList}"></f:selectItems>
+							</p:selectCheckboxMenu>
+						</f:facet>
+						<h:outputText value="#{proj.status}" />
+					</p:column>
+					<p:column style="width:10%;">
+						<p:commandLink  id="projUpdate"
+							action="projectDetail?faces-redirect=true">
+							<h:graphicImage name="gfx/ed1.jpg"  width="30px" height="30px"/>
+							<f:setPropertyActionListener
+								target="#{workMatrixController.selectedProject}" value="#{proj}"></f:setPropertyActionListener>
+							<f:setPropertyActionListener
+								target="#{workMatrixController.operation}" value="UPDATE"></f:setPropertyActionListener>
+
+					</p:commandLink>
+<p:spacer width="30px"></p:spacer>
+
+						<p:commandLink id="deletePro"
+							update="prolistview" process="@this"
+							action="#{workMatrixController.deleteProject}">
+							<h:graphicImage name="gfx/delete12.jpg"  width="25px" height="30px"/>
+							<f:setPropertyActionListener
+								target="#{workMatrixController.selectedProject}" value="#{proj}"></f:setPropertyActionListener>
+						</p:commandLink>
+					</p:column>
+				</p:dataTable>
+			</p:tab>
+		</p:tabView>
+	</h:form>
+</ui:define>
+</ui:composition>
+</h:body>
+
+</html>

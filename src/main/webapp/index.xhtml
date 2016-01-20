@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="application/javascript">
+    $(document).ready(function() {
+    	/* $.ajax({
+            type: 'POST',
+            url: 'http://www.tutorialspoint.com/json/data.json',
+            data: $('#cityDetails').serialize(),
+            dataType:"json", //to parse string into JSON object,
+            success: function(data){ 
+                if(data){
+                    var len = data.length;
+                    var txt = "";
+                    if(len > 0){
+                        for(var i=0;i<len;i++){
+                            if(data[i].name && data[i].country){
+                                txt += "<tr><td>"+data[i].name+"</td><td>"+data[i].country+"</td></tr>";
+                            }
+                        }
+                        if(txt != ""){
+                            $("#table").append(txt);
+                        }
+                    }
+                }
+            }
+        });
+        return false;//suppress natural form submission
+    }); */
+    $.ajax({
+        url: '/echo/json/',
+        type: "post",
+        dataType: "json",
+        data: {
+            json: JSON.stringify([
+                {
+                id: 1,
+                firstName: "Peter",
+                lastName: "Jhons"},
+            {
+                id: 2,
+                firstName: "David",
+                lastName: "Bowie"}
+            ]),
+            delay: 3
+        },
+        success: function(data, textStatus, jqXHR) {
+            // since we are using jQuery, you don't need to parse response
+            drawTable(data);
+        }
+    });
+});
+    function drawTable(data) {
+        for (var i = 0; i < data.length; i++) {
+            drawRow(data[i]);
+        }
+    }
+
+    function drawRow(rowData) {
+        var row = $("<tr />")
+        $("#personDataTable").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+        row.append($("<td>" + rowData.id + "</td>"));
+        row.append($("<td>" + rowData.firstName + "</td>"));
+        row.append($("<td>" + rowData.lastName + "</td>"));
+    }
+
+</script>
+
+</head>
+
+<body>
+<table id="personDataTable">
+    <tr>
+        <th>Id</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+    </tr>
+    
+</table>
+        
+</body>
+</html>

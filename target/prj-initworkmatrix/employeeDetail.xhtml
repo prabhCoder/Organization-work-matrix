@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	 
+<h:head>
+	<meta http-equiv="Content-Type"
+		content="text/html; charset=iso-8859-1 " />
+		
+</h:head>
+<f:metadata>
+		<f:event listener="#{workMatrixController.isSelectedEmployeeNull}" type="preRenderView" /> 
+		</f:metadata>
+<h:body>
+	<ui:composition template="/template.xhtml">
+		<ui:define name="content">
+		
+			<h:form id="formemp">
+				<p:panel id="empPanel" header="Employee Details">
+					<h:panelGrid columns="3">
+
+						<h:outputText value="Name:" />
+						<h:outputText
+							value="#{workMatrixController.selectedEmployee.name}"
+							rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation=='READ'}"></h:outputText>
+						<p:inputText id="name"
+							value="#{workMatrixController.selectedEmployee.name}"
+							style="width:300px;"
+							rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}"
+							required="true" requiredMessage="Please enter employee name"
+							validatorMessage="Name should be of more than 1 character">
+							<f:validateLength minimum="2" maximum="200"></f:validateLength>
+						</p:inputText>
+						<p:message for="name"></p:message>
+
+						<h:outputText value="Address:" />
+						<h:outputText
+							value="#{workMatrixController.selectedEmployee.address}"
+							rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation=='READ'}" />
+						<p:inputTextarea id="address" rows="5" cols="30" maxlength="240"
+							autoResize="false" style="width:300px;"
+							value="#{workMatrixController.selectedEmployee.address}"
+							rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}"
+							required="true" requiredMessage="Please enter employee address"
+							validatorMessage="Address should be of more than 1 character">
+							<f:validateLength minimum="2" maximum="254"></f:validateLength>
+						</p:inputTextarea>
+						<p:message for="address"></p:message>
+						<h:outputText value="Contact Number:" />
+						<h:outputText
+							value="#{workMatrixController.selectedEmployee.contactno}"
+							rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation=='READ'}" />
+						<p:inputText id="contactno"
+							value="#{workMatrixController.selectedEmployee.contactno}"
+							style="width:300px;"
+							rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}"
+							validator="#{workMatrixController.validateContactNumber}">
+							<!-- <f:validateRegex pattern="^\\d{10,14}$"></f:validateRegex>  -->
+						</p:inputText>
+						<p:message for="contactno"></p:message>
+						<h:outputText value="Email:" for="email" />
+						<h:outputText
+							value="#{workMatrixController.selectedEmployee.email}"
+							rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation=='READ'}" />
+						<p:inputText id="email"
+							value="#{workMatrixController.selectedEmployee.email}"
+							style="width:300px;"
+							rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}"
+							validator="#{workMatrixController.validateEmail}">
+							<!-- <f:validateRegex pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"></f:validateRegex> -->
+						</p:inputText>
+						<p:message for="email"></p:message>
+
+						<h:outputText value="Date Of Birth:" />
+						<h:outputText value="#{workMatrixController.selectedEmployee.dob}"
+							rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation=='READ'}">
+							<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
+						<p:calendar id="dob"
+							value="#{workMatrixController.selectedEmployee.dob}" mode="popup"
+							pattern="dd-MM-yyyy" navigator="true" style="width:500px;"
+							rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}"
+							required="true" requiredMessage="Please enter dob"
+							validator="#{workMatrixController.validateDateOfBirth}"
+							converterMessage="invalid date" />
+						<p:message for="dob"></p:message>
+
+						<h:outputText value="Gender:" />
+						<h:outputText
+							value="#{workMatrixController.selectedEmployee.gender eq workMatrixController.maleChar ?'Male' : 'Female'}"
+							rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation=='READ'}" />
+						<p:selectOneRadio id="gender"
+							value="#{workMatrixController.selectedEmployee.gender}"
+							style="width:300px;"
+							rendered="#{workMatrixController.operation ne 'READ'}"
+							required="true" requiredMessage="Please select atleast one">
+							<f:selectItem itemValue="M" itemLabel="Male" />
+							<f:selectItem itemValue="F" itemLabel="Female" />
+						</p:selectOneRadio>
+
+						<p:message for="gender"></p:message>
+
+
+						<h:outputText value="Nationality" />
+						<h:outputText
+							value="#{workMatrixController.selectedEmployee.nationality}"
+							rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation=='READ'}" />
+						<p:inputText id="nationality"
+							value="#{workMatrixController.selectedEmployee.nationality}"
+							style="width:300px;"
+							rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}"
+							validatorMessage="you cannot exceed the limit">
+							<f:validateLength maximum="100"></f:validateLength>
+						</p:inputText>
+						<p:message for="nationality"></p:message>
+						<h:outputText value="Department:" />
+						<h:outputText
+							value="#{workMatrixController.selectedEmployee.department}"
+							rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation=='READ'}" />
+						<p:selectOneMenu id="department"
+							value="#{workMatrixController.selectedEmployee.department}"
+							style="width:310px;"
+							rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}">
+							<f:selectItems value="#{workMatrixController.departmentList}" />
+						</p:selectOneMenu>
+						<p:message for="department"></p:message>
+
+						<h:outputText value="Branch:" />
+						<h:outputText
+							value="#{workMatrixController.selectedEmployee.branch}"
+							rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation=='READ'}" />
+						<p:selectOneMenu id="branch"
+							value="#{workMatrixController.selectedEmployee.branch}"
+							style="width:310px;"
+							rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}">
+							<f:selectItems value="#{workMatrixController.branchList}" />
+
+						</p:selectOneMenu>
+						<p:message for="branch"></p:message>
+
+						<h:outputText value="Position:" />
+						<h:outputText
+							value="#{workMatrixController.selectedEmployee.position}"
+							rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation=='READ'}" />
+						<p:inputText id="position"
+							value="#{workMatrixController.selectedEmployee.position}"
+							style="width:300px;"
+							rendered="#{workMatrixController.operation=='UPDATE' or workMatrixController.operation=='ADD'}"
+							required="true" requiredMessage="Please enter the position"
+							validatorMessage="you cannot exceed the limit">
+							<f:validateLength maximum="100"></f:validateLength>
+						</p:inputText>
+						<p:message for="position"></p:message>
+
+						<h:outputText value="Projects:"
+							rendered="#{workMatrixController.operation eq 'READ'}" />
+
+
+						<p:dataList id="projectListRead" rows="4"
+							value="#{workMatrixController.selectedEmployee.projects}"
+							var="project" emptyMessage="No Projects "
+							rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation eq 'READ'}">
+							<p:commandLink action="projectDetail?faces-redirect=true"
+								value="#{project.name}">
+								<f:setPropertyActionListener
+									target="#{workMatrixController.selectedProject}"
+									value="#{project}"></f:setPropertyActionListener>
+
+							</p:commandLink>
+						</p:dataList>
+
+
+					</h:panelGrid>
+					<p:spacer height="30"></p:spacer>
+					<p:panel header="Projects" style="width:480px"
+						rendered="#{workMatrixController.operation eq 'UPDATE'}">
+						<h:panelGrid columns="2">
+							<h:panelGroup>
+								<p:selectManyMenu label="Add Project" id="projectDropDown"
+									style="width:220px;height:182px" scrollHeight="182"
+									value="#{workMatrixController.selectedProjectsToBeAdded}"
+									 var="p"  converter="#{projectConvertor}"
+									rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation eq'UPDATE'}">
+
+									<f:selectItems id="projectDropDownItems"
+										value="#{workMatrixController.projectsToBeAdded}"
+										var="project" itemValue="#{project}"
+										itemLabel="#{project.name}">
+
+									</f:selectItems>
+									<p:column>
+										<h:graphicImage name="gfx/add.png" width="25px" height="25px"/>
+									</p:column>
+									<p:column>
+										<p:outputLabel value="#{p.name}"></p:outputLabel>
+									</p:column>
+									<p:ajax event="change"
+										listener="#{workMatrixController.handleAddProjectListChange}"
+										update="projectDropDown, projectListUpdate" />
+								</p:selectManyMenu>
+							</h:panelGroup>
+
+							<p:dataList id="projectListUpdate" emptyMessage="No Projects "
+								type="definition" style="width:220px;height:182px"
+								value="#{workMatrixController.selectedEmployee.projects}"
+								var="project" rows="4" paginator="true"
+								rendered="#{!empty workMatrixController.selectedEmployee and workMatrixController.operation eq 'UPDATE'}">
+								<!-- <f:facet name="header">
+						Projects
+						</f:facet> -->
+								<p:outputLabel value="#{project.name}"></p:outputLabel>
+								<p:spacer width="10" height="10" />
+								<p:commandLink
+									action="#{workMatrixController.deleteProjectFromEmployee}"
+									process="@this" update="@parent,:formemp:projectDropDown">
+									<h:graphicImage name="gfx/delete12.jpg" width="15px"
+										height="20px" />
+									<f:setPropertyActionListener
+										target="#{workMatrixController.selectedProjectToBeDeleted}"
+										value="#{project}"></f:setPropertyActionListener>
+
+								</p:commandLink>
+							</p:dataList>
+
+
+						</h:panelGrid>
+					</p:panel>
+
+					<br />
+					<h:panelGroup id="buttons">
+						<p:commandButton value="Update" id="empUpdate" update=":formemp"
+							rendered="#{workMatrixController.operation eq 'READ'}">
+
+							<f:setPropertyActionListener
+								target="#{workMatrixController.operation}" value="UPDATE"></f:setPropertyActionListener>
+
+						</p:commandButton>
+						<p:commandButton action="#{workMatrixController.saveEmployee}"
+							value="Save" process="@this, @(.ui-panel :input)"
+							rendered="#{workMatrixController.operation ne 'READ'}"
+							ajax="false">
+
+						</p:commandButton>
+						<p:commandButton
+							actionListener="#{workMatrixController.handleBackAction}"
+							onclick="history.go(-1)" value="Back" />
+
+					</h:panelGroup>
+				</p:panel>
+
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+</html>

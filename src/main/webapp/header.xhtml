@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <body>
+	    <ui:composition>
+	   <p:panel>
+        <h:panelGrid columns="2">
+		<p:commandLink action="listView?faces-redirect=true" immediate="true">
+        <h:graphicImage name="gfx/initheme_logo.jpg" />
+        </p:commandLink>
+        <h2>work matrix</h2>
+    </h:panelGrid>
+    </p:panel>
+        <p:panel>
+        <p:carousel numVisible="1" autoPlayInterval="4000" effect="easeInStrong" circular="true" itemStyle="height:350px;width:1130px;">
+      <p:graphicImage name="gfx/carousel-img.jpg" height="350px" width="1130"></p:graphicImage>
+      <p:graphicImage name="gfx/carousal1.jpg" height="350px" width="1130px"></p:graphicImage>
+        
+      </p:carousel>
+        </p:panel>
+      
+ 
+	    </ui:composition>
+    </body>
+</html>
